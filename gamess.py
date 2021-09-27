@@ -10,8 +10,11 @@ class Gamess:
     def __init__(self, path, version, temp):
         """
         :param path: path to rungms script
+        :type path: str
         :param version: version of GAMESS
+        :type version: str
         :param temp: path to the folder with temporary files for calculations
+        :type temp: str
         """
         self.path = path
         self.version = version
@@ -38,7 +41,9 @@ class GamessInput:
     def __init__(self, mol_filename, params):
         """
         :param mol_filename: the file with .mol extension, which contains coordinates of the material
+        :type mol_filename: str
         :param params: the parameters for GAMESS input file header
+        :type params: dict
         """
         self.mol_filename = mol_filename
         self.mol_name = os.path.splitext(mol_filename)[0]
@@ -47,6 +52,7 @@ class GamessInput:
     def create_inp_file(self):
         """
         Create .inp file for calculations.
+
         :return: name of the GAMESS input file
         """
         mol = read(self.mol_filename)
