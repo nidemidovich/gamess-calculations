@@ -1,5 +1,5 @@
 from job import Job
-from utils import read_config, txt_to_json, smiles_json_to_dict
+from utils import read_config, read_sys_input
 
 
 # calc params
@@ -46,16 +46,14 @@ nrg_params = {
 
 # preparation
 config = read_config()
-smiles_json = txt_to_json()
-smiles_dict = smiles_json_to_dict(smiles_json)
+material, material_name = read_sys_input()
 
 # main
-for material_name, material in smiles_dict.items():
-    job = Job(
-        material=material,
-        material_name=material_name,
-        config=config,
-        opt_params=opt_params,
-        nrg_params=nrg_params
-    )
-    job.job()
+job = Job(
+    material=material,
+    material_name=material_name,
+    config=config,
+    opt_params=opt_params,
+    nrg_params=nrg_params
+)
+job.job()

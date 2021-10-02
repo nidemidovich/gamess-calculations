@@ -25,6 +25,13 @@ def read_config(config_file='config.json'):
     return config
 
 
+def read_sys_input():
+    material_name = sys.argv[1]
+    material = sys.argv[2]
+
+    return material, material_name
+
+
 def smiles_to_mol(material, material_name, n_iter):
     smiles = pybel.readstring('smi', material)
     smiles.make3D()
