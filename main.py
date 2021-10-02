@@ -1,53 +1,61 @@
-import calc_params
-from gamess import Gamess, GamessInput
-from utils import gamout_to_mol, read_config, smiles_to_mol, read_sys_input, txt_to_json
+from job import Job
+from utils import read_config, txt_to_json, smiles_json_to_dict
 
 
-def main():
-    # preparation
-    txt_to_json()
+# calc params
+opt_params = {
+    'contrl': {
+        'scftyp': 'rhf',
+        'runtyp': 'optimize',
+        'units': 'angs',
+        'maxit': 199
+    },
+    'system': {'mwords': 500},
+    'basis': {
+        'gbasis': 'n31',
+        'ngauss': 6,
+        'ndfunc': 1
+    },
+    'statpt': {
+        'opttol': 0.0001,
+        'nstep': 1000
+    },
+    'guess': {'guess': 'huckel'},
+    'dft': {'dfttyp': 'b3lyp'}
+}
+nrg_params = {
+    'contrl': {
+        'scftyp': 'rhf',
+        'runtyp': 'energy',
+        'tddft': 'excite',
+        'units': 'angs'
+    },
+    'system': {
+        'mwords': 5000,
+        'memddi': 2000
+    },
+    'basis': {
+        'gbasis': 'n31',
+        'ngauss': 6,
+        'ndfunc': 1,
+        'npfunc': 1
+    },
+    'guess': {'guess': 'huckel'},
+    'dft': {'dfttyp': 'b3lyp'}
+}
 
-    # (material, material_name)
-    sys_input = read_sys_input()
+# preparation
+config = read_config()
+smiles_json = txt_to_json()
+smiles_dict = smiles_json_to_dict(smiles_json)
 
-    config = read_config()
-
-    mol_filename = smiles_to_mol(
-        material=sys_input[0],
-        material_name=sys_input[1],
-        n_iter=config['n_iter']
+# main
+for material_name, material in smiles_dict.items():
+    job = Job(
+        material=material,
+        material_name=material_name,
+        config=config,
+        opt_params=opt_params,
+        nrg_params=nrg_params
     )
-
-    optimization_input_file = GamessInput(
-        mol_filename=mol_filename,
-        params=calc_params.optimization_params
-    ).create_inp_file()
-
-    gamess = Gamess(
-        path=config['path'],
-        version=config['version'],
-        temp=config['temp']
-    )
-
-    # material_name + _opt
-    optimization_output_file = sys_input[1] + '_opt.gamout'
-    gamess.run(
-        input_file=optimization_input_file,
-        ncpus=config['ncpus'],
-        output_file=optimization_output_file
-    )
-
-    optimization_coords = gamout_to_mol(optimization_output_file)
-
-    energy_input_file = GamessInput(
-        mol_filename=optimization_coords,
-        params=calc_params.energy_params
-    ).create_inp_file()
-
-    # material_name + _nrg
-    energy_output_file = sys_input[1] + '_nrg.gamout'
-    gamess.run(
-        input_file=energy_input_file,
-        ncpus=config['ncpus'],
-        output_file=energy_output_file
-    )
+    job.job()

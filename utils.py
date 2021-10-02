@@ -1,5 +1,5 @@
 import json
-import os.path
+import os
 import sys
 
 from openbabel import pybel
@@ -25,13 +25,6 @@ def read_config(config_file='config.json'):
     return config
 
 
-def read_sys_input():
-    material_name = sys.argv[1]
-    material = sys.argv[2]
-
-    return material, material_name
-
-
 def smiles_to_mol(material, material_name, n_iter):
     smiles = pybel.readstring('smi', material)
     smiles.make3D()
@@ -43,9 +36,17 @@ def smiles_to_mol(material, material_name, n_iter):
     return mol_filename
 
 
-def txt_to_json(smiles_txt='smiles.txt', start_num=1, json_name='smiles.json'):
+def smiles_json_to_dict(smiles_json):
+    with open(smiles_json) as file:
+        smiles_dict = json.load(file)
+
+    return smiles_dict
+
+
+def txt_to_json(smiles_txt='smiles.txt', start_num=1):
     smiles_dict = {}
     file_num = start_num
+    json_name = os.path.splitext(smiles_txt)[0] + '.json'
 
     with open(smiles_txt) as file:
         for smiles in file:
@@ -54,3 +55,5 @@ def txt_to_json(smiles_txt='smiles.txt', start_num=1, json_name='smiles.json'):
 
     with open(json_name, 'w') as file:
         json.dump(smiles_dict, file, sort_keys=True, indent=4)
+
+    return json_name

@@ -96,7 +96,7 @@ def get_homo_lumo_energies(homo_orbital, lumo_orbital, reader):
     return energies
 
 
-def make_report(file_to_report='report.txt', path='.', smiles='smiles.json'):
+def make_gap_report(file_to_report='gap_report.txt', path='.', smiles='smiles.json'):
     """
     Makes report which contains material's SMILES structure, HOMO and LUMO energies and thier difference (gap).
 
