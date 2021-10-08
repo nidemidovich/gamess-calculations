@@ -2,7 +2,7 @@ import json
 
 
 class BaseReport:
-    def __init__(self, result, file_to_report='report.txt', smiles='smiles.json'):
+    def __init__(self, file_to_report='report.txt', smiles='smiles.json'):
         """
         :param file_to_report: file to write the report
         :type file_to_report: str
