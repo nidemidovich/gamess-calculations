@@ -10,4 +10,3 @@ with open(smiles_json) as file:
 
 for material_name, material in smiles.items():
     call('sbatch job.sh {0} "{1}"'.format(material_name, material), shell=True)
-    
