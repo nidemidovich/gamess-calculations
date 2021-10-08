@@ -1,4 +1,5 @@
 from job import Job
+from report import TransitionStateReport
 from utils import read_config, read_sys_input
 
 
@@ -47,6 +48,7 @@ nrg_params = {
 # preparation
 config = read_config()
 material, material_name = read_sys_input()
+report = TransitionStateReport()
 
 # main
 job = Job(
@@ -54,6 +56,7 @@ job = Job(
     material_name=material_name,
     config=config,
     opt_params=opt_params,
-    nrg_params=nrg_params
+    nrg_params=nrg_params,
+    report=report
 )
 job.job()
