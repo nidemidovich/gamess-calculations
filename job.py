@@ -49,4 +49,4 @@ class Job:
             output_file=energy_output_file
         )
 
-        self.report.get_report(energy_output_file)
+        self.report.send_report(energy_output_file, self.config['emails'])

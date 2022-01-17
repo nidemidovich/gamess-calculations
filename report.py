@@ -1,5 +1,7 @@
 import json
 
+from mail import send_email
+
 
 class BaseReport:
     def __init__(self, file_to_report='report.txt', smiles='smiles.json'):
@@ -16,12 +18,23 @@ class BaseReport:
         name = result.split('_')[0]
         material = self.get_material(name)
 
-        with open(self.file_to_report, 'a+') as report, open(result, encoding='utf-8') as result_reader:
+        with open(self.file_to_report, 'a+') as report:
             report.write(material)
             report.write('\n')
-            for line in result_reader:
-                report.write(line)
-            report.write('\n')
+            report.write('OVERWRITE THIS METHOD BASED ON YOUR NEEDINGS')
+
+        return material
+
+    def send_report(self, result, emails):
+        material = self.get_report(result)
+        message_subject = f'SMILES: {material}'
+        with open(self.file_to_report) as report:
+            message_body = report.read()
+        send_email(
+            subject=message_subject,
+            body=message_body,
+            emails=emails
+        )
 
     def get_material(self, name):
         with open(self.smiles) as materails:
