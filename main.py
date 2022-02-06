@@ -1,5 +1,5 @@
 from job import Job
-from report import TransitionStateReport
+from report import TDDFTReport
 from utils import read_config, read_sys_input
 
 
@@ -48,7 +48,10 @@ nrg_params = {
 # preparation
 config = read_config()
 material, material_name = read_sys_input()
-report = TransitionStateReport()
+report = TDDFTReport(
+    material=material,
+    material_name=material_name
+)
 
 # main
 job = Job(

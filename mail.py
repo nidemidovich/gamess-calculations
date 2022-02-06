@@ -28,9 +28,6 @@ def send_email(subject, body, emails):
         msg['To'] = emails
     msg.set_content(body)
 
-    print(msg['To'])
-
-    if MAIL_ENCRYPTION == 'ssl':
-        with smtplib.SMTP_SSL(host=server_addres, port=MAIL_PORT) as mailer:
-            mailer.login(MAIL_USERNAME, MAIL_PASSWORD)
-            mailer.send_message(msg)
+    with smtplib.SMTP_SSL(host=server_addres, port=MAIL_PORT) as mailer:
+        mailer.login(MAIL_USERNAME, MAIL_PASSWORD)
+        mailer.send_message(msg)
