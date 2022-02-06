@@ -1,4 +1,4 @@
-from gamess import Gamess, GamessInput
+from gamess import GAMESS, GAMESSInput
 from utils import gamout_to_mol, smiles_to_mol
 
 
@@ -13,7 +13,7 @@ class Job:
         self.report = report
 
     def job(self):
-        gamess = Gamess(
+        gamess = GAMESS(
             path=self.config['path'],
             version=self.config['version'],
             temp=self.config['temp']
@@ -25,7 +25,7 @@ class Job:
             n_iter=self.config['n_iter']
         )
 
-        optimization_input_file = GamessInput(
+        optimization_input_file = GAMESSInput(
             mol_filename=mol_filename,
             params=self.opt_params
         ).create_inp_file()
@@ -38,7 +38,7 @@ class Job:
 
         optimization_coords = gamout_to_mol(optimization_output_file)
 
-        energy_input_file = GamessInput(
+        energy_input_file = GAMESSInput(
             mol_filename=optimization_coords,
             params=self.nrg_params
         ).create_inp_file()

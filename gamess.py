@@ -5,7 +5,7 @@ from ase.calculators.gamess_us import GAMESSUS
 from ase.io import read
 
 
-class Gamess:
+class GAMESS:
 
     def __init__(self, path, version, temp):
         """
@@ -36,7 +36,7 @@ class Gamess:
         print('End of calculation.\n')
 
 
-class GamessInput:
+class GAMESSInput:
 
     def __init__(self, mol_filename, params):
         """
