@@ -1,61 +1,60 @@
-import json
+from abc import ABC, abstractclassmethod
 
 from mail import send_email
 
 
-class BaseReport:
-    def __init__(self, file_to_report='report.txt', smiles='smiles.json'):
+class AbstractReport(ABC):
+
+    @abstractclassmethod
+    def get_report(self, results: str):
         """
-        :param file_to_report: file to write the report
-        :type file_to_report: str
-        :param smiles: path to file with the SMILES materials
-        :type smiles: str
+        Creats a file with a report
+
+        :param results: file's name with the results of the calculations
         """
-        self.file_to_report = file_to_report
-        self.smiles = smiles
 
-    def get_report(self, result):
-        name = result.split('_')[0]
-        material = self.get_material(name)
+    @abstractclassmethod
+    def send_report(self, emails: list) -> None:
+        """
+        Sends a report to the email addresses from the list
+        """
+        
 
-        with open(self.file_to_report, 'a+') as report:
-            report.write(material)
-            report.write('\n')
-            report.write('OVERWRITE THIS METHOD BASED ON YOUR NEEDINGS')
+class BaseReport(AbstractReport):
+    
+    def __init__(self, material: str, material_name: str):
+        """
+        :param materail: SMILES structure of the current material
+        :param material_name: name of the current material
+        """
+        self.material = material
+        self.material_name = material_name
+        self.file_to_report = material_name + '_report.txt'
 
-        return material
-
-    def send_report(self, result, emails):
-        material = self.get_report(result)
-        message_subject = f'SMILES: {material}'
+    def send_report(self, emails):
+        message_subject = f'SMILES: {self.material}'
+        
         with open(self.file_to_report) as report:
             message_body = report.read()
+        
         send_email(
             subject=message_subject,
             body=message_body,
             emails=emails
         )
 
-    def get_material(self, name):
-        with open(self.smiles) as materails:
-            materails_dict = json.load(materails)
 
-        return materails_dict[name]
-
-
-class TransitionStateReport(BaseReport):
-    def get_report(self, result):
-        name = result.split('_')[0]
-        material = self.get_material(name)
-
-        with open(result, encoding='utf-8') as result_reader:
-            line = result_reader.readline()
+class TDDFTReport(BaseReport):
+    
+    def get_report(self, results):
+        with open(results, encoding='utf-8') as results_reader:
+            line = results_reader.readline()
             while 'SUMMARY OF TDDFT RESULTS' not in line:
-                line = result_reader.readline()
+                line = results_reader.readline()
 
             with open(self.file_to_report, 'a+') as report:
-                report.write(material)
+                report.write(self.material)
                 report.write('\n')
                 while '..... DONE WITH TD-DFT EXCITATION ENERGIES .....' not in line:
                     report.write(line)
-                    line = result_reader.readline()
+                    line = results_reader.readline()
