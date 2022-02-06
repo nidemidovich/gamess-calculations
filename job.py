@@ -1,10 +1,19 @@
 from gamess import GAMESS, GAMESSInput
+from report import BaseReport
 from utils import gamout_to_mol, smiles_to_mol
 
 
 class Job:
 
-    def __init__(self, material, material_name, config, opt_params, nrg_params, report):
+    def __init__(
+        self, 
+        material: str, 
+        material_name: str, 
+        config: dict, 
+        opt_params: dict, 
+        nrg_params: dict, 
+        report: BaseReport
+    ):
         self.material = material
         self.material_name = material_name
         self.config = config
@@ -49,4 +58,5 @@ class Job:
             output_file=energy_output_file
         )
 
-        self.report.send_report(energy_output_file, self.config['emails'])
+        self.report.get_report(energy_output_file)
+        self.report.send_report(self.config['emails'])
